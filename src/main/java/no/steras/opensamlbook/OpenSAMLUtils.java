@@ -1,5 +1,6 @@
 package no.steras.opensamlbook;
 
+import org.opensaml.common.SignableSAMLObject;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.ws.soap.soap11.Body;
 import org.opensaml.ws.soap.soap11.Envelope;
@@ -8,18 +9,17 @@ import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilderFactory;
 import org.opensaml.xml.io.Marshaller;
 import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.util.XMLHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
@@ -60,19 +60,36 @@ public class OpenSAMLUtils {
     }
 
     public static void logSAMLObject(final XMLObject object) {
+        Element element = null;
+
+        if (object instanceof SignableSAMLObject && ((SignableSAMLObject)object).isSigned() && object.getDOM() != null) {
+            element = object.getDOM();
+        } else {
+            try {
+                Marshaller out = Configuration.getMarshallerFactory().getMarshaller(object);
+                out.marshall(object);
+                element = object.getDOM();
+
+            } catch (MarshallingException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
         try {
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             StreamResult result = new StreamResult(new StringWriter());
-            DOMSource source = new DOMSource(object.getDOM());
+            DOMSource source = new DOMSource(element);
+
             transformer.transform(source, result);
             String xmlString = result.getWriter().toString();
 
             logger.info(xmlString);
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
         } catch (TransformerException e) {
-            logger.error(e.getMessage(), e);
+            e.printStackTrace();
         }
-
     }
 
     public static Envelope wrapInSOAPEnvelope(final XMLObject xmlObject) throws IllegalAccessException {
