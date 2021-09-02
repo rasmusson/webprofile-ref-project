@@ -1,7 +1,7 @@
 # OpenSAML V2 example project
 This is a simple example project used in the book [*A Guide to OpenSAML*](https://blog.samlsecurity.com/book/)
 
-The project show how to implement SAML 2.0 Webprofile using OpenSAML V2 in Java.
+The project show how to implement SAML 2.0 Web browser SSO profile using OpenSAML V2 in Java.
 
 :warning: **OpenSAML V2 is now deprecated and have been replaced by newer version**
 A new example project based on [OpenSAML V3 is available](https://blog.samlsecurity.com/book/) as well as a [new corresponding example project](https://github.com/rasmusson/OpenSAMLv3-webprofile-example)
