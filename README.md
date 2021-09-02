@@ -17,4 +17,4 @@ This projekt demonstrate the following in OpenSAML
 * Reading credentials, signing and verifying messages
 
 ## More resources on OpenSAML
-On my blog, (www.samlsecurity.com](https://blog.samlsecurity.com/), I provide a lot of guides, tutorials and examples on the use of OpenSAML and SAML.
+On my blog, [www.samlsecurity.com](https://blog.samlsecurity.com/), I provide a lot of guides, tutorials and examples on the use of OpenSAML and SAML.
